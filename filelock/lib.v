@@ -40,6 +40,7 @@ pub fn (mut l FileLock) acquire() ?bool {
 		return error('cannot create lock file $l.name')
 	}
 	if C.flock(fd, C.LOCK_EX) == -1 {
+		C.close(fd)
 		return error('cannot lock')
 	}
 	l.fd = fd

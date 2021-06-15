@@ -23,6 +23,10 @@ pub fn new(fileName string) FileLock {
 
 [unsafe]
 pub fn (mut l FileLock) unlink() {
+	if l.fd != -1 {
+		C.close(l.fd)
+		l.fd = -1
+	}
 	C.unlink(l.name.str)
 }
 

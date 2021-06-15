@@ -12,4 +12,3 @@ pub fn new(fileName string) FileLock {
 		fd: -1
 	}
 }
-

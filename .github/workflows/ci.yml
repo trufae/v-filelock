@@ -13,8 +13,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Installing V
-      run: (cd /tmp && git clone --depth=1 https://github.com/vlang/v && make -C v all install)
+      run: (cd /tmp && git clone --depth=1 https://github.com/vlang/v && make -C v && sudo v/v symlink)
     - name: Format test
       run: v fmt main.v filelock/*.v
     - name: Running example
       run: v run main.v
+    - name: Windows build
+      run: v -os windows main.v && ls -l main.exe

@@ -1,5 +1,7 @@
 module filelock
 
+import time
+
 #include <sys/file.h>
 
 fn C.unlink(&char) int
@@ -45,15 +47,13 @@ pub fn (mut l FileLock) acquire() ?bool {
 	return true
 }
 
-pub fn (mut l FileLock) acquire_retries(retries int, s int) ?bool {
-	for i := 0; i < retries; i++ {
-		if l.acquire() or {
-			// do nothing
-		}
-		{
+pub fn (mut l FileLock) wait_acquire(s int) ?bool {
+	fin := time.now().add(s)
+	for time.now () < fin {
+		if l.try_acquire() {
 			return true
 		}
-		C.usleep(s * 1000)
+		C.usleep(1000)
 	}
 	return false
 }
@@ -68,16 +68,19 @@ pub fn (mut l FileLock) release() bool {
 	return false
 }
 
-pub fn (mut l FileLock) is_available() bool {
-	fd := C.open('$l.name'.str, C.O_CREAT, 0o644)
-	defer {
-		C.close(fd)
+pub fn (mut l FileLock) try_acquire() bool {
+	if l.fd != -1 {
+		return true
 	}
+	fd := C.open('$l.name'.str, C.O_CREAT, 0o644)
 	if fd != -1 {
 		err := C.flock(fd, C.LOCK_EX | C.LOCK_NB)
 		if err == -1 {
-			return true
+			C.close(fd)
+			return false
 		}
+		l.fd = fd
+		return true
 	}
 	return false
 }

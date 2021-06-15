@@ -7,7 +7,7 @@ fn main() {
 	unsafe {
 		l.unlink()
 	}
-	res := l.acquire_retries(10, 10) or { panic(err) }
+	res := l.wait_acquire(10) or { panic(err) }
 	if !res {
 		println('cannot acquire')
 		exit(1)

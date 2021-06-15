@@ -35,7 +35,7 @@ pub fn (mut l FileLock) acquire() ?bool {
 	mut fd := C.open('$l.name'.str, C.O_CREAT, 0o644)
 	if fd == -1 {
 		// if stat is too old delete lockfile
-		//fd = C.open('$l.name'.str, C.O_RDONLY, 0)
+		// fd = C.open('$l.name'.str, C.O_RDONLY, 0)
 	}
 	if fd == -1 {
 		return error('cannot create lock file $l.name')
@@ -49,7 +49,7 @@ pub fn (mut l FileLock) acquire() ?bool {
 
 pub fn (mut l FileLock) wait_acquire(s int) ?bool {
 	fin := time.now().add(s)
-	for time.now () < fin {
+	for time.now() < fin {
 		if l.try_acquire() {
 			return true
 		}

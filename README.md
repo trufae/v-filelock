@@ -1,3 +1,5 @@
+[![CI](https://github.com/trufae/v-filelock/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/trufae/v-filelock/actions/workflows/ci.yml)
+
 filelock
 ========
 

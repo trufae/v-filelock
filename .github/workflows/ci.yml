@@ -13,7 +13,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Installing V
-      run: git clone --depth=1 https://github.com/vlang/v && make -C v all install
+      run: (cd /tmp && git clone --depth=1 https://github.com/vlang/v && make -C v all install)
     - name: Format test
       run: v fmt main.v filelock/*.v
     - name: Running example

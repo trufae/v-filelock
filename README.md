@@ -21,4 +21,11 @@ fn main() {
 TODO
 ----
 
-This module runs only on unix systems, windows port will be done soon.
+* Windows port
+
+Inspiration
+-----------
+
+* https://github.com/juju/fslock
+* https://www.npmjs.com/package/lockfile
+* https://linux.die.net/man/2/flock

@@ -35,12 +35,7 @@ pub fn (mut l FileLock) acquire() ?bool {
 		// lock already acquired by this instance
 		return false
 	}
-	// nothing
-	mut fd := C.open('$l.name'.str, C.O_CREAT, 0o644)
-	if fd == -1 {
-		// if stat is too old delete lockfile
-		fd = C.open('$l.name'.str, C.O_RDONLY, 0)
-	}
+	fd := open('$l.name')
 	if fd == -1 {
 		return error('cannot create lock file $l.name')
 	}
@@ -72,11 +67,20 @@ pub fn (mut l FileLock) wait_acquire(s int) ?bool {
 	return false
 }
 
+fn open(f string) int {
+	mut fd := C.open(f.str, C.O_CREAT, 0o644)
+	if fd == -1 {
+		// if stat is too old delete lockfile
+		fd = C.open(f.str, C.O_RDONLY, 0)
+	}
+	return fd
+}
+
 pub fn (mut l FileLock) try_acquire() bool {
 	if l.fd != -1 {
 		return true
 	}
-	fd := C.open('$l.name'.str, C.O_CREAT, 0o644)
+	fd := open('$l.name')
 	if fd != -1 {
 		err := C.flock(fd, C.LOCK_EX | C.LOCK_NB)
 		if err == -1 {

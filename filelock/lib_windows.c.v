@@ -1,5 +1,7 @@
 module filelock
 
+// https://github.com/juju/fslock/blob/master/fslock_windows.go
+
 [unsafe]
 pub fn (mut l FileLock) unlink() {
 }

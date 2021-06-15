@@ -17,3 +17,8 @@ fn main() {
 	l.release()
 }
 ```
+
+TODO
+----
+
+This module runs only on unix systems, windows port will be done soon.

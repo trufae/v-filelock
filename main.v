@@ -7,12 +7,12 @@ fn main() {
 	unsafe {
 		l.unlink()
 	}
-	*/
-	res := l.acquire_retries(100, 100) or { panic(err) }
+	res := l.acquire_retries(10, 10) or { panic(err) }
 	if !res {
 		println('cannot acquire')
 		exit(1)
 	}
+	*/
 	l.acquire() or { panic(err) }
 	for i := 0; i < 10; i++ {
 		eprintln('wait')

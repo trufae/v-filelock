@@ -30,10 +30,10 @@ pub fn (mut l FileLock) acquire() ?bool {
 		return false
 	}
 	// nothing
-	mut fd := C.open('$l.name'.str, C.O_CREAT, 644)
+	mut fd := C.open('$l.name'.str, C.O_CREAT, 0o644)
 	if fd == -1 {
 		// if stat is too old delete lockfile
-		fd = C.open('$l.name'.str, C.O_RDONLY, 0)
+		//fd = C.open('$l.name'.str, C.O_RDONLY, 0)
 	}
 	if fd == -1 {
 		return error('cannot create lock file $l.name')
@@ -69,11 +69,11 @@ pub fn (mut l FileLock) release() bool {
 }
 
 pub fn (mut l FileLock) is_available() bool {
-	fd := C.open('$l.name'.str, C.O_CREAT, 644)
+	fd := C.open('$l.name'.str, C.O_CREAT, 0o644)
 	defer {
 		C.close(fd)
 	}
-	if l.fd != -1 {
+	if fd != -1 {
 		err := C.flock(fd, C.LOCK_EX | C.LOCK_NB)
 		if err == -1 {
 			return true

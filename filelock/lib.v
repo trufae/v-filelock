@@ -21,7 +21,7 @@ pub fn new(fileName string) FileLock {
 	}
 }
 
-[autofree]
+[unsafe]
 pub fn (mut l FileLock) unlink() {
 	C.unlink(l.name.str)
 }
@@ -47,6 +47,16 @@ pub fn (mut l FileLock) acquire() ?bool {
 	return true
 }
 
+pub fn (mut l FileLock) release() bool {
+	if l.fd != -1 {
+		C.close(l.fd)
+		l.fd = -1
+		C.unlink(l.name.str)
+		return true
+	}
+	return false
+}
+
 pub fn (mut l FileLock) wait_acquire(s int) ?bool {
 	fin := time.now().add(s)
 	for time.now() < fin {
@@ -54,16 +64,6 @@ pub fn (mut l FileLock) wait_acquire(s int) ?bool {
 			return true
 		}
 		C.usleep(1000)
-	}
-	return false
-}
-
-pub fn (mut l FileLock) release() bool {
-	if l.fd != -1 {
-		C.close(l.fd)
-		l.fd = -1
-		C.unlink(l.name.str)
-		return true
 	}
 	return false
 }

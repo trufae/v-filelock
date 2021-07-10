@@ -1,26 +1,6 @@
 module filelock
 import time
 
-// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfile
-struct Offset {
-	low u32
-	high u32
-}
-
-union Dummy {
-	offset Offset
-	pointer voidptr
-}
-
-struct Overlapped {
-	internal C.ULONG_PTR
-	internal_high C.ULONG_PTR
-	dummy Dummy
-	h_event voidptr
-}
-
-fn C.LockFileEx(voidptr, u32, u32, u32, u32, &Overlapped) bool
-// fn C.UnlockFileEx(voidptr, u32, u32, u32, &Overlapped) bool
 fn C.DeleteFileW(&u16) bool
 fn C.CreateFileW(&u16, u32, u32, voidptr, u32, u32, voidptr) voidptr
 fn C.CloseHandle(voidptr) bool
@@ -44,17 +24,6 @@ pub fn (mut l FileLock) acquire() ?bool {
 	if fd == -1 {
 		return error('cannot create lock file $l.name')
 	}
-	// overlapped := Overlapped{}
-	// if !C.LockFileEx(fd, 
-					// C.LOCKFILE_EXCLUSIVE_LOCK,
-					// 0,
-					// C.MAXDWORD,
-					// C.MAXDWORD,
-					// &overlapped
-					// ) {
-		// C.CloseHandle(fd)
-		// return error('cannot lock')
-	// }
 	l.fd = fd
 	return true
 }
@@ -103,18 +72,6 @@ pub fn (mut l FileLock) try_acquire() bool {
 	}
 	fd := open(l.name)
 	if fd == -1 { return false }
-	
-	// overlapped := Overlapped{}
-	// ret := C.LockFileEx(fd, 
-						// C.LOCKFILE_EXCLUSIVE_LOCK | C.LOCKFILE_FAIL_IMMEDIATELY,
-						// 0,
-						// C.MAXDWORD, 
-						// C.MAXDWORD, 
-						// &overlapped)
-	// if !ret {
-		// C.CloseHandle(fd)
-		// return false
-	// }
 	l.fd = fd
 	return true
 }

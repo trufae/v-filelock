@@ -23,7 +23,7 @@ fn main() {
 TODO
 ----
 
-* Windows port
+* Merge into the main vlib
 
 Inspiration
 -----------
